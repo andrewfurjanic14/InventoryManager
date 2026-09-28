@@ -1,6 +1,7 @@
 @page "/batches"
 @inject InventoryManager.Client.Services.OilBatchService BatchService
 @inject InventoryManager.Client.Services.OilService OilService
+@inject InventoryManager.Client.Services.ProviderService ProviderService
 
 <PageTitle>Batches</PageTitle>
 
@@ -14,38 +15,123 @@
 }
 else
 {
-    <ul>
-        @foreach (var b in batches)
-        {
-            <li>@b.BatchId - @b.BatchNumber (Oil: @b.OilId) - @b.Status</li>
-        }
-    </ul>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Batch</th>
+                <th>Oil</th>
+                <th>Provider</th>
+                <th>Country</th>
+                <th>Lot</th>
+                <th>Arrival</th>
+                <th>Arrival oz</th>
+                <th>Current oz</th>
+                <th>Cost (USD)</th>
+                <th>Exp</th>
+                <th>Storage</th>
+                <th>Status</th>
+                <th>COA</th>
+                <th>Updated</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var b in batches)
+            {
+                <tr>
+                    <td>@b.BatchId</td>
+                    <td>@b.OilName</td>
+                    <td>@b.ProviderName</td>
+                    <td>@b.CountryOfOrigin</td>
+                    <td>@b.LotNumber</td>
+                    <td>@b.ArrivalDate.ToShortDateString()</td>
+                    <td>@b.ArrivalWeight_Oz</td>
+                    <td>@b.CurrentWeight_Oz</td>
+                    <td>@(b.Cost_USD.HasValue ? b.Cost_USD.Value.ToString("F2") : "")</td>
+                    <td>@(b.ExpirationDate?.ToShortDateString() ?? "")</td>
+                    <td>@b.StorageLocation</td>
+                    <td>@b.Status</td>
+                    <td>@b.COAFilePath</td>
+                    <td>@b.UpdatedAt.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 
 <h4>Create Batch</h4>
 <EditForm Model="newBatch" OnValidSubmit="Create">
-    <label>Oil</label>
-    <select @bind="newBatch.OilId">
-        @if (oils != null)
-        {
-            @foreach (var o in oils)
+    <div>
+        <label>Oil</label>
+        <select @bind="newBatch.OilId">
+            @if (oils != null)
             {
-                <option value="@o.OilId">@o.Name</option>
+                @foreach (var o in oils)
+                {
+                    <option value="@o.OilId">@o.Name</option>
+                }
             }
-        }
-    </select>
-    <InputText @bind-Value="newBatch.BatchNumber" placeholder="Batch number" />
+        </select>
+    </div>
+
+    <div>
+        <label>Provider</label>
+        <select @bind="newBatch.ProviderId">
+            <option value="0">-- select provider --</option>
+            @if (providers != null)
+            {
+                @foreach (var p in providers)
+                {
+                    <option value="@p.ProviderId">@p.Name</option>
+                }
+            }
+        </select>
+    </div>
+
+    <div>
+        <InputText @bind-Value="newBatch.CountryOfOrigin" placeholder="Country of origin" />
+    </div>
+
+    <div>
+        <InputText @bind-Value="newBatch.LotNumber" placeholder="Lot number" />
+    </div>
+
+    <div>
+        <InputDate @bind-Value="newBatch.ArrivalDate" />
+    </div>
+
+    <div>
+        <InputNumber @bind-Value="newBatch.ArrivalWeight_Oz" />
+    </div>
+
+    <div>
+        <InputNumber TValue="decimal?" @bind-Value="newBatch.Cost_USD" />
+    </div>
+
+    <div>
+        <InputDate TValue="DateTime?" @bind-Value="newBatch.ExpirationDate" />
+    </div>
+
+    <div>
+        <InputText @bind-Value="newBatch.StorageLocation" placeholder="Storage location" />
+    </div>
+
+    <div>
+        <InputText @bind-Value="newBatch.COAFilePath" placeholder="COA file path" />
+    </div>
+
     <button type="submit">Create</button>
 </EditForm>
 
 @code {
-    private List<InventoryManager.Client.Services.OilBatchDto>? batches;
-    private List<InventoryManager.Client.Services.OilDto>? oils;
-    private InventoryManager.Client.Services.CreateOilBatchDto newBatch = new();
+    private List<InventoryManager.Shared.Dtos.OilBatchDto>? batches;
+    private List<InventoryManager.Shared.Dtos.OilDto>? oils;
+    private List<InventoryManager.Shared.Dtos.ProviderDto>? providers;
+    private InventoryManager.Shared.Dtos.CreateOilBatchDto newBatch = new();
 
     protected override async Task OnInitializedAsync()
     {
         oils = await OilService.GetAllAsync();
+        providers = await ProviderService.GetAllAsync();
         await Load();
     }
 

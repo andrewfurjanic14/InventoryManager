@@ -1,4 +1,5 @@
 ﻿using InventoryManager.Shared.Dtos;
+using InventoryManager.Shared;
 using InventoryManager.Data;
 using InventoryManager.Data.Models;
 using Microsoft.EntityFrameworkCore;

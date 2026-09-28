@@ -1,4 +1,5 @@
 ﻿using InventoryManager.Shared.Dtos;
+using InventoryManager.Shared;
 using InventoryManager.Api.Services;
 using InventoryManager.Data;
 using Microsoft.AspNetCore.Mvc;

@@ -14,9 +14,9 @@
 else
 {
     <ul>
-        @foreach (var oil in oils)
+            @foreach (var oil in oils)
         {
-            <li>@oil.OilId - @oil.Name (@oil.Description)</li>
+            <li>@oil.OilId - @oil.Name (@oil.BotanicalName)</li>
         }
     </ul>
 }
@@ -24,13 +24,13 @@ else
 <h4>Add Oil</h4>
 <EditForm Model="newOil" OnValidSubmit="Create">
     <InputText @bind-Value="newOil.Name" placeholder="Name" />
-    <InputText @bind-Value="newOil.Description" placeholder="Description" />
+    <InputText @bind-Value="newOil.BotanicalName" placeholder="Botanical name" />
     <button type="submit">Create</button>
 </EditForm>
 
 @code {
-    private List<InventoryManager.Client.Services.OilDto>? oils;
-    private InventoryManager.Client.Services.SaveOilDto newOil = new();
+    private List<InventoryManager.Shared.Dtos.OilDto>? oils;
+    private InventoryManager.Shared.Dtos.SaveOilDto newOil = new();
 
     protected override async Task OnInitializedAsync()
     {

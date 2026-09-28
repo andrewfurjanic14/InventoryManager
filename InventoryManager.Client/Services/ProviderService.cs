@@ -2,6 +2,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using InventoryManager.Shared.Dtos;
 
 namespace InventoryManager.Client.Services
 {

@@ -2,4 +2,5 @@
   <Project Path="InventoryManager.Api/InventoryManager.Api.csproj" />
   <Project Path="InventoryManager.Client/InventoryManager.Client.csproj" />
   <Project Path="InventoryManager.Data/InventoryManager.Data.csproj" />
+  <Project Path="InventoryManager.Shared/InventoryManager.Shared.csproj" />
 </Solution>
