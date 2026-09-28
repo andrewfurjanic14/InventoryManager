@@ -1,4 +1,5 @@
 ﻿using InventoryManager.Data.Models;
+using InventoryManager.Shared;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

@@ -19,4 +19,8 @@
     <ProjectReference Include="..\InventoryManager.Data\InventoryManager.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\InventoryManager.Shared\InventoryManager.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

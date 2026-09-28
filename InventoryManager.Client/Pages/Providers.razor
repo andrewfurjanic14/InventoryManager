@@ -1,0 +1,51 @@
+@page "/providers"
+@inject InventoryManager.Client.Services.ProviderService ProviderService
+
+<PageTitle>Providers</PageTitle>
+
+<h3>Providers</h3>
+
+<button @onclick="Load">Reload</button>
+
+@if (providers is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+        @foreach (var p in providers)
+        {
+            <li>@p.ProviderId - @p.Name</li>
+        }
+    </ul>
+}
+
+<h4>Add Provider</h4>
+<EditForm Model="newProvider" OnValidSubmit="Create">
+    <InputText @bind-Value="newProvider.Name" placeholder="Name" />
+    <button type="submit">Create</button>
+</EditForm>
+
+@code {
+    private List<InventoryManager.Client.Services.ProviderDto>? providers;
+    private InventoryManager.Client.Services.SaveProviderDto newProvider = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load()
+    {
+        providers = await ProviderService.GetAllAsync();
+        StateHasChanged();
+    }
+
+    private async Task Create()
+    {
+        await ProviderService.CreateAsync(newProvider);
+        newProvider = new();
+        await Load();
+    }
+}

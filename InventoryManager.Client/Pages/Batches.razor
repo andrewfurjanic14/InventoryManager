@@ -1,0 +1,64 @@
+@page "/batches"
+@inject InventoryManager.Client.Services.OilBatchService BatchService
+@inject InventoryManager.Client.Services.OilService OilService
+
+<PageTitle>Batches</PageTitle>
+
+<h3>Batches</h3>
+
+<button @onclick="Load">Reload</button>
+
+@if (batches is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+        @foreach (var b in batches)
+        {
+            <li>@b.BatchId - @b.BatchNumber (Oil: @b.OilId) - @b.Status</li>
+        }
+    </ul>
+}
+
+<h4>Create Batch</h4>
+<EditForm Model="newBatch" OnValidSubmit="Create">
+    <label>Oil</label>
+    <select @bind="newBatch.OilId">
+        @if (oils != null)
+        {
+            @foreach (var o in oils)
+            {
+                <option value="@o.OilId">@o.Name</option>
+            }
+        }
+    </select>
+    <InputText @bind-Value="newBatch.BatchNumber" placeholder="Batch number" />
+    <button type="submit">Create</button>
+</EditForm>
+
+@code {
+    private List<InventoryManager.Client.Services.OilBatchDto>? batches;
+    private List<InventoryManager.Client.Services.OilDto>? oils;
+    private InventoryManager.Client.Services.CreateOilBatchDto newBatch = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        oils = await OilService.GetAllAsync();
+        await Load();
+    }
+
+    private async Task Load()
+    {
+        batches = await BatchService.GetAllAsync();
+        StateHasChanged();
+    }
+
+    private async Task Create()
+    {
+        await BatchService.CreateAsync(newBatch);
+        newBatch = new();
+        await Load();
+    }
+}

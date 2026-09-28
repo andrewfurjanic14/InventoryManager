@@ -1,4 +1,4 @@
-﻿using InventoryManager.Api.DTOs;
+﻿using InventoryManager.Shared.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Text;

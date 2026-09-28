@@ -11,7 +11,14 @@ namespace InventoryManager.Client
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            // Configure HttpClient to call the API. ApiBaseUrl can be overridden in wwwroot/appsettings.json
+            var apiBase = builder.Configuration["ApiBaseUrl"] ?? builder.HostEnvironment.BaseAddress;
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiBase) });
+
+            // Register typed services for business logic
+            builder.Services.AddScoped<Services.OilService>();
+            builder.Services.AddScoped<Services.ProviderService>();
+            builder.Services.AddScoped<Services.OilBatchService>();
 
             await builder.Build().RunAsync();
         }

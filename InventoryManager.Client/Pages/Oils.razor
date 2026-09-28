@@ -1,0 +1,52 @@
+@page "/oils"
+@inject InventoryManager.Client.Services.OilService OilService
+
+<PageTitle>Oils</PageTitle>
+
+<h3>Oils</h3>
+
+<button @onclick="Load">Reload</button>
+
+@if (oils is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+        @foreach (var oil in oils)
+        {
+            <li>@oil.OilId - @oil.Name (@oil.Description)</li>
+        }
+    </ul>
+}
+
+<h4>Add Oil</h4>
+<EditForm Model="newOil" OnValidSubmit="Create">
+    <InputText @bind-Value="newOil.Name" placeholder="Name" />
+    <InputText @bind-Value="newOil.Description" placeholder="Description" />
+    <button type="submit">Create</button>
+</EditForm>
+
+@code {
+    private List<InventoryManager.Client.Services.OilDto>? oils;
+    private InventoryManager.Client.Services.SaveOilDto newOil = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load()
+    {
+        oils = await OilService.GetAllAsync();
+        StateHasChanged();
+    }
+
+    private async Task Create()
+    {
+        await OilService.CreateAsync(newOil);
+        newOil = new();
+        await Load();
+    }
+}
